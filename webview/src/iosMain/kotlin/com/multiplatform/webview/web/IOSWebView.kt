@@ -21,6 +21,11 @@ import platform.Foundation.setValue
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
+import platform.UIKit.UIRefreshControl
+import platform.UIKit.*
+import platform.WebKit.*
+import platform.Foundation.*
+
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -38,6 +43,16 @@ class IOSWebView(
 ) : IWebView {
     init {
         initWebView()
+        refreshControl = UIRefreshControl()
+        refreshControl.addTarget(this, action = NSSelectorFromString("refreshWebView"), forControlEvents = UIControlEventValueChanged)
+
+        webView.scrollView.addSubview(refreshControl)
+    }
+
+     @ObjCAction
+    fun refreshWebView() {
+        webView.reload()
+        refreshControl.endRefreshing()
     }
 
     override fun canGoBack() = webView.canGoBack
